@@ -2,6 +2,7 @@
 title: "Naomi's Jazz Recital"
 date: "2026-06-09"
 cover: "/images/naomi-sax-view-1.jpg"
+slug: "naomi-jazz-recital"
 tags: ["music","sax","performance"]
 ---
 

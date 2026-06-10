@@ -1,22 +1,32 @@
 import Link from 'next/link';
 import { getPosts } from '../../lib/posts';
 
-export default function BlogIndex() {
-  const posts = getPosts();
+export default function BlogPage() {
+  const posts = getPosts().sort(
+    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+  );
 
   return (
-    <main className="max-w-4xl mx-auto p-8">
-      <h1 className="text-4xl font-bold mb-8">
-        Blog Archive
-      </h1>
+    <main className="max-w-4xl mx-auto px-4 py-8">
+      <h1 className="text-5xl font-bold text-center mb-12">Blog</h1>
 
-      {posts.map((post) => (
-        <div key={post.slug} className="mb-6">
-          <Link href={`/blog/${post.slug}`}>
-            {String(post.data.title)}
-          </Link>
-        </div>
-      ))}
+      <div className="space-y-6">
+        {posts.map(post => (
+          <div key={post.slug} className="p-6 border rounded-lg shadow hover:shadow-lg transition prose">
+            {post.data.cover && (
+              <img src={post.data.cover} alt={post.data.title} className="mb-4 rounded" />
+            )}
+            <h2 className="text-2xl font-semibold mb-2">
+              <Link href={`/blog/${post.slug}`}>{post.data.title}</Link>
+            </h2>
+            <p className="text-gray-500 mb-2">{post.data.date}</p>
+            <p>{post.content.slice(0, 150)}...</p>
+            <Link href={`/blog/${post.slug}`} className="text-blue-500 mt-2 inline-block">
+              Read more →
+            </Link>
+          </div>
+        ))}
+      </div>
     </main>
   );
 }

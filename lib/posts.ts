@@ -12,18 +12,28 @@ export function getPosts() {
     const fullPath = path.join(postsDirectory, fileName);
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data, content } = matter(fileContents);
+    const slug = data.slug ?? fileName.replace('.md', '');
     return {
-      slug: fileName.replace('.md', ''),
+      slug,
       data,
-      content,
+      content
     };
   });
 }
 
 export async function getPostContent(slug: string) {
-  const fullPath = path.join(postsDirectory, slug + '.md');
-  const fileContents = fs.readFileSync(fullPath, 'utf8');
-  const { data, content } = matter(fileContents);
-  const contentHtml = (await remark().use(html).process(content)).toString();
-  return { data, contentHtml };
+	const posts = getPosts();
+	const post = posts.find(p => p.slug === slug);
+	if(!post){
+		throw new Error(`Post not found for slug: ${slug}`);
+	}
+	const contentHtml = (await remark().use(html).process(post.content)).toString();
+	return { data: post.data, contentHtml };
 }
+
+ // const fullPath = path.join(postsDirectory, slug + '.md');
+ // const fileContents = fs.readFileSync(fullPath, 'utf8');
+ // const { data, content } = matter(fileContents);
+ // const contentHtml = (await remark().use(html).process(content)).toString();
+ // return { data, contentHtml };
+//}
